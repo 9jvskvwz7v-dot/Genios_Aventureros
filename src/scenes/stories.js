@@ -15,7 +15,7 @@ export const stories = [
     {
         id: 'patitofeo',
         title: 'El Patito Feo',
-        cover: null,
+        cover: 'patito',
         pages: [
             { text: 'En una granja nació un patito distinto a sus hermanos, y todos se burlaban de él.', image: null },
             { text: 'Triste, el patito decidió irse a buscar un lugar donde nadie se riera de él.', image: null },
@@ -29,7 +29,7 @@ export const stories = [
     {
         id: 'trescerditos',
         title: 'Los 3 Cerditos',
-        cover: null,
+        cover: 'cerditos',
         pages: [
             { text: 'Tres cerditos hermanos decidieron construir cada uno su propia casa.', image: null },
             { text: 'El primero la hizo de paja, el segundo de madera, y el tercero de ladrillos.', image: null },
@@ -43,7 +43,7 @@ export const stories = [
     {
         id: 'leonyraton',
         title: 'El León y el Ratón',
-        cover: null,
+        cover: 'leon',
         pages: [
             { text: 'Un león dormía en el bosque cuando un pequeño ratón lo despertó por accidente.', image: null },
             { text: 'El león lo atrapó enojado, pero el ratón le prometió: "Algún día te ayudaré".', image: null },
@@ -57,7 +57,7 @@ export const stories = [
     {
         id: 'caperucita',
         title: 'Caperucita Roja',
-        cover: null,
+        cover: 'caperucita',
         pages: [
             { text: 'Caperucita Roja fue a llevarle una canasta de comida a su abuelita, que vivía en el bosque.', image: null },
             { text: 'En el camino se encontró con un lobo, que corrió a adelantarse a la casa de la abuela.', image: null },
@@ -71,7 +71,7 @@ export const stories = [
     {
         id: 'liebretortuga',
         title: 'La Liebre y la Tortuga',
-        cover: null,
+        cover: 'tortuga',
         pages: [
             { text: 'La liebre se burlaba siempre de lo lenta que caminaba la tortuga.', image: null },
             { text: 'Cansada de las burlas, la tortuga la retó a una carrera hasta el árbol grande.', image: null },
@@ -85,7 +85,7 @@ export const stories = [
     {
         id: 'ricitosdeoro',
         title: 'Ricitos de Oro',
-        cover: null,
+        cover: 'ricitos',
         pages: [
             { text: 'Ricitos de Oro se perdió en el bosque y encontró una casita acogedora.', image: null },
             { text: 'Adentro había tres platos de sopa: probó los tres, y el más pequeño fue el que más le gustó.', image: null },
