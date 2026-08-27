@@ -9,7 +9,12 @@ export class Cuentos extends Phaser.Scene {
     preload() {
         this.load.image('background', 'assets/fondo1.png');
         this.load.image('casita', 'assets/casita.png');
-
+        this.load.image('cerditos', 'assets/cerditos.png')
+        this.load.image('patito', 'assets/patito.png')
+        this.load.image('leon', 'assets/leon.png')
+        this.load.image('caperucita', 'assets/caperucita.png')
+        this.load.image('tortuga', 'assets/tortuga.png')
+        this.load.image('ricitos', 'assets/ricitos.png')
     }
 
     create() {
@@ -54,11 +59,8 @@ export class Cuentos extends Phaser.Scene {
 
     createStoryCard(x, y, w, h, story) {
         const container = this.add.container(x, y);
-
-        // Fondo de la tarjeta (siempre visible, aunque tenga imagen encima)
+        
         const panel = this.add.graphics();
-        panel.fillStyle(0x2b2b45, 0.9);
-        panel.lineStyle(3, 0xffffff, 0.35);
         panel.fillRoundedRect(-w / 2, -h / 2, w, h, 20);
         panel.strokeRoundedRect(-w / 2, -h / 2, w, h, 20);
         container.add(panel);
