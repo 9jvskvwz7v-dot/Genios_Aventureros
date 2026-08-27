@@ -27,7 +27,7 @@ export const activities = [
         id: 'unir1',
         title: 'Une Palabra e Imagen',
         type: 'matchimage',
-        cover: null,
+        cover: 'Une',
         pairs: [
             { word: 'NAVE', emoji: '🚀' },
             { word: 'LUNA', emoji: '🌙' },
@@ -40,7 +40,7 @@ export const activities = [
         id: 'frases1',
         title: 'Rompecabezas de Frases',
         type: 'sentencepuzzle',
-        cover: null,
+        cover: 'Arma',
         sentences: [
             ['LA', 'NAVE', 'VUELA', 'ALTO'],
             ['LA', 'LUNA', 'BRILLA', 'DE', 'NOCHE'],
