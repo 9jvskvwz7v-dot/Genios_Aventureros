@@ -32,6 +32,9 @@ export class SopaDeLetras extends Phaser.Scene {
     preload() {
         this.load.image('background', 'assets/fondo1.png');
         this.load.image('control', 'assets/control.png');
+        this.load.image('titulo', 'assets/sopa_titulo.png')
+        this.load.image('marco', 'assets/sopa_marco.png')
+        this.load.image('marco_palabras', 'assets/palabras_marco.png')
     }
 
     create() {
@@ -42,12 +45,7 @@ export class SopaDeLetras extends Phaser.Scene {
 
         this.add.image(640, 360, 'background').setScale(0.16);
 
-        this.add.text(640, 45, this.activity.title, {
-            fontFamily: 'Arial',
-            fontSize: '38px',
-            color: '#ffffff',
-            fontStyle: 'bold'
-        }).setOrigin(0.5);
+        this.add.image(640, 45, 'titulo').setScale(0.18)
 
         this.buildGrid();
         this.drawGrid();
@@ -144,19 +142,12 @@ export class SopaDeLetras extends Phaser.Scene {
         this.originX = 640 - (size * this.cellSize) / 2 - 80;
         this.originY = 120;
 
-        // Panel de fondo detrás de las letras, para que no se pierdan
-        // contra el fondo del juego.
-        const padding = 20;
-        const panelX = this.originX - padding;
-        const panelY = this.originY - padding;
-        const panelWidth = size * this.cellSize + padding * 2;
-        const panelHeight = size * this.cellSize + padding * 2;
+        this.add.image(640, 360, 'marco').setScale(0.2)
 
         const panel = this.add.graphics();
         panel.fillStyle(0x1b1b2f, 0.88);
         panel.lineStyle(3, 0xffffff, 0.25);
-        panel.fillRoundedRect(panelX, panelY, panelWidth, panelHeight, 24);
-        panel.strokeRoundedRect(panelX, panelY, panelWidth, panelHeight, 24);
+        
 
         for (let r = 0; r < size; r++) {
             for (let c = 0; c < size; c++) {
@@ -166,14 +157,14 @@ export class SopaDeLetras extends Phaser.Scene {
                 this.add.text(x, y, this.grid[r][c], {
                     fontFamily: 'Arial',
                     fontSize: '24px',
-                    color: '#ffffff'
+                    color: '#000000'
                 }).setOrigin(0.5);
             }
         }
     }
 
     drawWordList() {
-        const startX = this.originX + this.gridSize * this.cellSize + 100;
+        const startX = this.originX + this.gridSize * this.cellSize + 90    ;
         const spacing = 34;
         const panelPadding = 20;
         const panelWidth = 240;
@@ -190,34 +181,30 @@ export class SopaDeLetras extends Phaser.Scene {
         const panelBottom = listStartY + this.words.length * spacing + panelPadding;
 
         // --- Panel de fondo detrás de la lista de palabras ---
-        const listPanel = this.add.graphics();
-        listPanel.fillStyle(0x1b1b2f, 0.88);
-        listPanel.lineStyle(3, 0xffffff, 0.25);
-        listPanel.fillRoundedRect(startX - panelPadding, panelTop, panelWidth, panelBottom - panelTop, 20);
-        listPanel.strokeRoundedRect(startX - panelPadding, panelTop, panelWidth, panelBottom - panelTop, 20);
-
+        this.add.image(960, 335, 'marco_palabras').setScale(0.20)
+        
         // --- Cronómetro y puntaje ---
         this.add.text(startX, timeLabelY, '⏱ Tiempo', {
             fontFamily: 'Arial',
             fontSize: '18px',
-            color: '#aaaaaa'
+            color: '#000000'
         });
         this.timerText = this.add.text(startX, timeValueY, '0:00', {
             fontFamily: 'Arial',
             fontSize: '28px',
-            color: '#ffffff',
+            color: '#000000',
             fontStyle: 'bold'
         });
 
         this.add.text(startX, scoreLabelY, '⭐ Puntos', {
             fontFamily: 'Arial',
             fontSize: '18px',
-            color: '#aaaaaa'
+            color: '#000000'
         });
         this.scoreText = this.add.text(startX, scoreValueY, '0', {
             fontFamily: 'Arial',
             fontSize: '28px',
-            color: '#ffdd55',
+            color: '#000000',
             fontStyle: 'bold'
         });
 
@@ -225,7 +212,7 @@ export class SopaDeLetras extends Phaser.Scene {
         this.add.text(startX, listTitleY, 'Encuentra:', {
             fontFamily: 'Arial',
             fontSize: '22px',
-            color: '#ffdd55',
+            color: '#000000',
             fontStyle: 'bold'
         });
 
@@ -235,7 +222,7 @@ export class SopaDeLetras extends Phaser.Scene {
             const text = this.add.text(startX, listStartY + index * spacing, word, {
                 fontFamily: 'Arial',
                 fontSize: '22px',
-                color: '#ffffff'
+                color: '#000000'
             });
             this.wordListTexts[word] = text;
         });
@@ -243,7 +230,7 @@ export class SopaDeLetras extends Phaser.Scene {
         this.winText = this.add.text(640, 660, '', {
             fontFamily: 'Arial',
             fontSize: '26px',
-            color: '#7CFC00',
+            color: '#335e089f',
             fontStyle: 'bold'
         }).setOrigin(0.5);
     }
@@ -401,7 +388,7 @@ export class SopaDeLetras extends Phaser.Scene {
         this.foundGraphics.fillCircle(endPos.x, endPos.y, radius);
 
         const text = this.wordListTexts[placement.word];
-        text.setColor('#7CFC00');
+        text.setColor('#33580d');
         text.setFontStyle('italic');
         text.setText(`✓ ${placement.word}`);
 
