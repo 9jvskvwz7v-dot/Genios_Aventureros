@@ -10,11 +10,15 @@ export class RompecabezasFrases extends Phaser.Scene {
         this.activityId = data.activityId;
         this.sentenceIndex = 0;
         this.score = 0;
+        this.locked = false; // evita verificar varias veces mientras se procesa una ronda
     }
 
     preload() {
-        this.load.image('background', 'assets/fondo1.png');
+        this.load.image('Fondo_Frases', 'assets/fondoFrases.png');
         this.load.image('control', 'assets/control.png');
+        this.load.image('letrero', 'assets/Forma_F.png')
+        this.load.image('puntos', 'assets/puntos.png')
+        this.load.image('contador', 'assets/frases_C.png')
     }
 
     create() {
@@ -22,7 +26,9 @@ export class RompecabezasFrases extends Phaser.Scene {
         this.sentences = Phaser.Utils.Array.Shuffle([...this.activity.sentences]);
 
         this.cameras.main.fadeIn(400, 0, 0, 0);
-        this.add.image(640, 360, 'background').setScale(0.16);
+        this.add.image(640, 360, 'Fondo_Frases').setScale(0.23);
+        this.add.image(200, 500, 'letrero').setScale(0.12)
+        this.add.image(140, 100, 'contador').setScale(0.4)
 
         this.add.text(640, 45, this.activity.title, {
             fontFamily: 'Arial',
@@ -31,11 +37,12 @@ export class RompecabezasFrases extends Phaser.Scene {
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
-        this.roundText = this.add.text(80, 130, '', {
-            fontFamily: 'Arial',
-            fontSize: '20px',
-            color: '#000000'
-        });
+        this.roundText = this.add.text(140, 165, '', {
+        fontFamily: 'Arial',
+        fontSize: '22px',
+        color: '#000000',
+        fontStyle: 'bold'
+        }).setOrigin(0.5);
 
         this.createScorePanel();
         this.createVerifyButton();
@@ -65,22 +72,13 @@ export class RompecabezasFrases extends Phaser.Scene {
     // ---------- Puntaje ----------
 
     createScorePanel() {
-        const panel = this.add.graphics();
-        panel.fillStyle(0x1b1b2f, 0.88);
-        panel.lineStyle(3, 0xffffff, 0.25);
-        panel.fillRoundedRect(1080, 20, 160, 70, 16);
-        panel.strokeRoundedRect(1080, 20, 160, 70, 16);
+        this.add.image(1100,20, 'puntos').setScale(0.4)
 
-        this.add.text(1160, 40, '⭐ Puntos', {
-            fontFamily: 'Arial',
-            fontSize: '16px',
-            color: '#aaaaaa'
-        }).setOrigin(0.5);
 
-        this.scoreText = this.add.text(1160, 65, '0', {
+        this.scoreText = this.add.text(1095, 85, '0', {
             fontFamily: 'Arial',
             fontSize: '26px',
-            color: '#ffdd55',
+            color: '#000000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
     }
@@ -93,6 +91,8 @@ export class RompecabezasFrases extends Phaser.Scene {
     // ---------- Manejo de rondas ----------
 
     startRound() {
+        this.locked = false; // se habilita la verificación de nuevo en esta ronda
+
         if (this.sentenceIndex >= this.sentences.length) {
             this.showFinalScreen();
             return;
@@ -100,7 +100,7 @@ export class RompecabezasFrases extends Phaser.Scene {
 
         this.roundContainer.removeAll(true);
         this.feedbackText.setText('');
-        this.roundText.setText(`Frase ${this.sentenceIndex + 1} / ${this.sentences.length}`);
+        this.roundText.setText(`${this.sentenceIndex + 1} / ${this.sentences.length}`);
 
         this.correctWords = this.sentences[this.sentenceIndex];
         const shuffled = Phaser.Utils.Array.Shuffle([...this.correctWords]);
@@ -114,22 +114,73 @@ export class RompecabezasFrases extends Phaser.Scene {
         return Math.max(90, word.length * 18 + 40);
     }
 
-    // Redibuja un espacio para que se ajuste a la palabra que tiene puesta
-    // en ese momento (sin importar si es la correcta o no). Si no tiene
-    // ninguna palabra, vuelve a su tamaño vacío original.
-    resizeSlot(zone, word) {
-        const width = word ? this.wordChipWidth(word) : zone.defaultWidth;
-        const height = 64;
-
+    // Ajusta el tamaño visual de una casilla (dibuja el recuadro en
+    // coordenadas LOCALES, ya que la posición real se controla aparte
+    // con zone.x / zone.y, lo que nos permite animar su posición).
+    drawSlotBox(zone, width, height, borderColor = 0xffdd55, borderAlpha = 0.5) {
+        zone.box.clear();
+        zone.box.lineStyle(3, borderColor, borderAlpha);
+        zone.box.fillStyle(0x1b1b2f, 0.88);
+        zone.box.fillRoundedRect(-width / 2, -height / 2, width, height, 14);
+        zone.box.strokeRoundedRect(-width / 2, -height / 2, width, height, 14);
         zone.width = width;
         zone.height = height;
         zone.setRectangleDropZone(width, height);
+    }
 
-        zone.box.clear();
-        zone.box.lineStyle(3, 0xffdd55, 0.5);
-        zone.box.fillStyle(0x1b1b2f, 0.88);
-        zone.box.fillRoundedRect(zone.baseX - width / 2, zone.baseY - height / 2, width, height, 14);
-        zone.box.strokeRoundedRect(zone.baseX - width / 2, zone.baseY - height / 2, width, height, 14);
+    // Recalcula el ancho y la posición de TODAS las casillas según su
+    // estado actual: las vacías usan el ancho uniforme, y las que ya
+    // tienen una palabra se encogen a su tamaño exacto. Luego las vuelve
+    // a acomodar una tras otra (con su espacio de separación), así que
+    // nunca pueden quedar montadas una sobre otra, y los huecos que deja
+    // una casilla al encogerse se cierran automáticamente.
+    layoutSlots() {
+        const gap = 14;
+        const slotHeight = 64;
+        const y = 340;
+
+        const widths = this.slotZones.map((zone, i) => {
+            const chip = this.slots[i];
+            return chip
+                ? Math.min(this.wordChipWidth(chip.getData('word')), zone.defaultWidth)
+                : zone.defaultWidth;
+        });
+
+        const totalWidth = widths.reduce((a, b) => a + b, 0) + gap * (widths.length - 1);
+        let x = 640 - totalWidth / 2;
+
+        this.slotZones.forEach((zone, i) => {
+            const width = widths[i];
+            const centerX = x + width / 2;
+
+            this.drawSlotBox(zone, width, slotHeight);
+
+            this.tweens.add({
+                targets: [zone, zone.box],
+                x: centerX,
+                y: y,
+                duration: 220,
+                ease: 'Sine.easeInOut'
+            });
+
+            zone.baseX = centerX;
+            zone.baseY = y;
+
+            // Si esta casilla ya tiene una palabra puesta, la palabra
+            // también se mueve junto con su casilla.
+            const chip = this.slots[i];
+            if (chip) {
+                this.tweens.add({
+                    targets: chip,
+                    x: centerX,
+                    y: y,
+                    duration: 220,
+                    ease: 'Sine.easeInOut'
+                });
+            }
+
+            x += width + gap;
+        });
     }
 
     buildSlots() {
@@ -137,10 +188,14 @@ export class RompecabezasFrases extends Phaser.Scene {
         const slotHeight = 64;
         const gap = 14;
 
-        // Cada espacio mide justo lo que necesita la palabra que le corresponde
-        // (no todas del mismo tamaño), así el fondo no queda más grande de lo necesario.
+        // Todas las casillas de esta frase usan el MISMO ancho (el de la
+        // palabra más larga de la frase). Así no se nota a simple vista
+        // cuál casilla corresponde a cuál palabra, y como todas las fichas
+        // de la bandeja vienen de la misma frase, ninguna se va a salir del
+        // recuadro ni a encimarse con la casilla de al lado.
         const widths = this.correctWords.map(w => this.wordChipWidth(w));
-        const totalWidth = widths.reduce((a, b) => a + b, 0) + gap * (count - 1);
+        const slotWidth = Math.max(...widths);
+        const totalWidth = slotWidth * count + gap * (count - 1);
 
         let x = 640 - totalWidth / 2;
         const y = 340;
@@ -148,23 +203,19 @@ export class RompecabezasFrases extends Phaser.Scene {
         this.slotZones = [];
 
         for (let i = 0; i < count; i++) {
-            const slotWidth = widths[i];
             const centerX = x + slotWidth / 2;
 
             const box = this.add.graphics();
-            box.lineStyle(3, 0xffdd55, 0.5);
-            box.fillStyle(0x1b1b2f, 0.88);
-            box.fillRoundedRect(centerX - slotWidth / 2, y - slotHeight / 2, slotWidth, slotHeight, 14);
-            box.strokeRoundedRect(centerX - slotWidth / 2, y - slotHeight / 2, slotWidth, slotHeight, 14);
+            box.setPosition(centerX, y);
 
             const zone = this.add.zone(centerX, y, slotWidth, slotHeight).setRectangleDropZone(slotWidth, slotHeight);
             zone.setData('slotIndex', i);
             zone.box = box;
             zone.baseX = centerX;
             zone.baseY = y;
-            zone.width = slotWidth;
-            zone.height = slotHeight;
             zone.defaultWidth = slotWidth;
+
+            this.drawSlotBox(zone, slotWidth, slotHeight);
 
             this.roundContainer.add([box, zone]);
             this.slotZones.push(zone);
@@ -231,12 +282,13 @@ export class RompecabezasFrases extends Phaser.Scene {
             this.children.bringToTop(gameObject);
 
             // Si la palabra ya estaba puesta en un espacio, la "recogemos":
-            // se libera ese espacio y vuelve a su tamaño vacío de inmediato.
+            // se libera ese espacio y se recalcula la posición de todas
+            // las casillas (la vacía vuelve a su tamaño uniforme).
             const currentSlot = gameObject.getData('slotIndex');
             if (currentSlot !== null) {
                 this.slots[currentSlot] = null;
                 gameObject.setData('slotIndex', null);
-                this.resizeSlot(this.slotZones[currentSlot], null);
+                this.layoutSlots();
             }
         });
 
@@ -259,29 +311,22 @@ export class RompecabezasFrases extends Phaser.Scene {
             this.slots[targetIndex] = gameObject;
             gameObject.setData('slotIndex', targetIndex);
 
-            // El cuadro se ajusta al tamaño de ESTA palabra, sin importar
-            // si es la correcta para ese espacio o no.
-            this.resizeSlot(dropZone, gameObject.getData('word'));
-
-            this.tweens.add({
-                targets: gameObject,
-                x: dropZone.baseX,
-                y: dropZone.baseY,
-                duration: 150
-            });
+            // Se recalcula la posición y tamaño de todas las casillas:
+            // esta se encoge a la palabra puesta, las demás se acomodan
+            // para cerrar los huecos, y layoutSlots ya se encarga de
+            // animar esta ficha (y las demás ya puestas) a su lugar.
+            this.layoutSlots();
         });
 
         this.input.on('dragend', (pointer, gameObject) => {
             if (!this.trayChips || !this.trayChips.includes(gameObject)) return;
 
-            // Siempre reubicamos según el estado real: si quedó asignada a un
-            // espacio, va ahí; si no, vuelve a su posición original en la bandeja.
+            // Si quedó asignada a una casilla, layoutSlots ya se encargó de
+            // animarla hasta ahí. Si no, la regresamos a su posición
+            // original en la bandeja.
             const currentSlot = gameObject.getData('slotIndex');
 
-            if (currentSlot !== null) {
-                const zone = this.slotZones[currentSlot];
-                this.tweens.add({ targets: gameObject, x: zone.baseX, y: zone.baseY, duration: 200 });
-            } else {
+            if (currentSlot === null) {
                 const pos = gameObject.getData('originalPosition');
                 this.tweens.add({ targets: gameObject, x: pos.x, y: pos.y, duration: 200 });
             }
@@ -316,11 +361,15 @@ export class RompecabezasFrases extends Phaser.Scene {
     }
 
     verifyAnswer() {
+        if (this.locked) return; // ya se está procesando una respuesta, ignora clics extra
+
         if (this.slots.some(s => s === null)) {
             this.feedbackText.setColor('#ffdd55');
             this.feedbackText.setText('Completa todos los espacios primero');
             return;
         }
+
+        this.locked = true; // bloquea nuevos clics mientras se resuelve esta ronda
 
         const currentOrder = this.slots.map(chip => chip.getData('word'));
         const isCorrect = currentOrder.every((word, i) => word === this.correctWords[i]);
@@ -348,20 +397,12 @@ export class RompecabezasFrases extends Phaser.Scene {
 
     shakeSlots() {
         this.slotZones.forEach(zone => {
-            zone.box.clear();
-            zone.box.lineStyle(3, 0xff6b6b, 0.8);
-            zone.box.fillStyle(0x1b1b2f, 0.88);
-            zone.box.fillRoundedRect(zone.baseX - zone.width / 2, zone.baseY - zone.height / 2, zone.width, zone.height, 14);
-            zone.box.strokeRoundedRect(zone.baseX - zone.width / 2, zone.baseY - zone.height / 2, zone.width, zone.height, 14);
+            this.drawSlotBox(zone, zone.width, zone.height, 0xff6b6b, 0.8);
         });
 
         this.time.delayedCall(400, () => {
             this.slotZones.forEach(zone => {
-                zone.box.clear();
-                zone.box.lineStyle(3, 0xffdd55, 0.5);
-                zone.box.fillStyle(0x1b1b2f, 0.88);
-                zone.box.fillRoundedRect(zone.baseX - zone.width / 2, zone.baseY - zone.height / 2, zone.width, zone.height, 14);
-                zone.box.strokeRoundedRect(zone.baseX - zone.width / 2, zone.baseY - zone.height / 2, zone.width, zone.height, 14);
+                this.drawSlotBox(zone, zone.width, zone.height, 0xffdd55, 0.5);
             });
         });
     }
