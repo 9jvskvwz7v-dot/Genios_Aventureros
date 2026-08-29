@@ -139,10 +139,10 @@ export class SopaDeLetras extends Phaser.Scene {
 
     drawGrid() {
         const size = this.gridSize;
-        this.originX = 640 - (size * this.cellSize) / 2 - 80;
+        this.originX = 600 - (size * this.cellSize) / 2 - 80;
         this.originY = 120;
 
-        this.add.image(640, 360, 'marco').setScale(0.2)
+        this.add.image(680, 360, 'marco').setScale(0.18)
 
         const panel = this.add.graphics();
         panel.fillStyle(0x1b1b2f, 0.88);
@@ -164,24 +164,22 @@ export class SopaDeLetras extends Phaser.Scene {
     }
 
     drawWordList() {
-        const startX = this.originX + this.gridSize * this.cellSize + 90    ;
+        const startX = this.originX + this.gridSize * this.cellSize + 80    ;
         const spacing = 34;
         const panelPadding = 20;
-        const panelWidth = 240;
-
-        // --- Posiciones verticales (con espacio suficiente entre bloques) ---
+        
         const panelTop = 100;
-        const timeLabelY = panelTop + 18;   // 118
-        const timeValueY = panelTop + 40;   // 140
-        const scoreLabelY = panelTop + 96;  // 196
-        const scoreValueY = panelTop + 118; // 218
-        const listTitleY = panelTop + 176;  // 276
-        const listStartY = panelTop + 206;  // 306
+        const timeLabelY = panelTop + 45;   // 118
+        const timeValueY = panelTop + 70;   // 140
+        const scoreLabelY = panelTop + 120;  // 196
+        const scoreValueY = panelTop + 145; // 218
+        const listTitleY = panelTop + 182;  // 276
+        const listStartY = panelTop + 212;  // 306
 
         const panelBottom = listStartY + this.words.length * spacing + panelPadding;
 
         // --- Panel de fondo detrás de la lista de palabras ---
-        this.add.image(960, 335, 'marco_palabras').setScale(0.20)
+        this.add.image(920, 340 , 'marco_palabras').setScale(0.18)
         
         // --- Cronómetro y puntaje ---
         this.add.text(startX, timeLabelY, '⏱ Tiempo', {
