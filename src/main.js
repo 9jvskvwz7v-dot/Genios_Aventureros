@@ -1,8 +1,8 @@
 import { Start } from './scenes/start.js';
 import { Menu } from './scenes/Menu.js';
-import { Cuentos } from './scenes/Cuentos.js';
+import { Cuentos } from './scenes/cuentos.js';
 import { CuentaCuentos } from './scenes/CuentaCuentos.js';
-import { Actividades } from './scenes/Actividades.js';
+import { Actividades } from './scenes/actividades.js';
 import { SopaDeLetras } from './scenes/sopa.js';
 import { CompletaPalabra } from './scenes/completa.js';
 import { UnePalabraImagen } from './scenes/unePalabra.js';
