@@ -35,6 +35,7 @@ export class SopaDeLetras extends Phaser.Scene {
         this.load.image('titulo', 'assets/sopa_titulo.png')
         this.load.image('marco', 'assets/sopa_marco.png')
         this.load.image('marco_palabras', 'assets/palabras_marco.png')
+        this.load.image('busca', 'assets/SOPA_L.png')
     }
 
     create() {
@@ -45,7 +46,9 @@ export class SopaDeLetras extends Phaser.Scene {
 
         this.add.image(640, 360, 'background').setScale(0.16);
 
-        this.add.image(640, 45, 'titulo').setScale(0.18)
+        this.add.image(640, 75, 'titulo').setScale(0.14)
+
+        this.add.image(140, 500, 'busca').setScale(0.12)
 
         this.buildGrid();
         this.drawGrid();
@@ -100,7 +103,7 @@ export class SopaDeLetras extends Phaser.Scene {
 
     placeWord(word) {
         const size = this.gridSize;
-        const maxAttempts = 300;
+        const maxAttempts = 9999;
 
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             const dir = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
@@ -140,9 +143,9 @@ export class SopaDeLetras extends Phaser.Scene {
     drawGrid() {
         const size = this.gridSize;
         this.originX = 600 - (size * this.cellSize) / 2 - 80;
-        this.originY = 120;
+        this.originY = 150;
 
-        this.add.image(680, 360, 'marco').setScale(0.18)
+        this.add.image(680, 385, 'marco').setScale(0.18)
 
         const panel = this.add.graphics();
         panel.fillStyle(0x1b1b2f, 0.88);
@@ -168,10 +171,10 @@ export class SopaDeLetras extends Phaser.Scene {
         const spacing = 34;
         const panelPadding = 20;
         
-        const panelTop = 100;
-        const timeLabelY = panelTop + 45;   // 118
-        const timeValueY = panelTop + 70;   // 140
-        const scoreLabelY = panelTop + 120;  // 196
+        const panelTop = 120;
+        const timeLabelY = panelTop + 75;   // 118
+        const timeValueY = panelTop + 95;   // 140
+        const scoreLabelY = panelTop + 125;  // 196
         const scoreValueY = panelTop + 145; // 218
         const listTitleY = panelTop + 182;  // 276
         const listStartY = panelTop + 212;  // 306
@@ -179,10 +182,10 @@ export class SopaDeLetras extends Phaser.Scene {
         const panelBottom = listStartY + this.words.length * spacing + panelPadding;
 
         // --- Panel de fondo detrás de la lista de palabras ---
-        this.add.image(920, 340 , 'marco_palabras').setScale(0.18)
+        this.add.image(920, 380 , 'marco_palabras').setScale(0.18)
         
         // --- Cronómetro y puntaje ---
-        this.add.text(startX, timeLabelY, '⏱ Tiempo', {
+        this.add.text(startX, timeLabelY, 'Tiempo', {
             fontFamily: 'Arial',
             fontSize: '18px',
             color: '#000000'
@@ -194,7 +197,7 @@ export class SopaDeLetras extends Phaser.Scene {
             fontStyle: 'bold'
         });
 
-        this.add.text(startX, scoreLabelY, '⭐ Puntos', {
+        this.add.text(startX, scoreLabelY, 'Puntos', {
             fontFamily: 'Arial',
             fontSize: '18px',
             color: '#000000'
@@ -390,7 +393,7 @@ export class SopaDeLetras extends Phaser.Scene {
         text.setFontStyle('italic');
         text.setText(`✓ ${placement.word}`);
 
-        this.score += 100;
+        if (this.score += 100);
         this.scoreText.setText(this.score.toString());
 
         if (this.foundWords.size === this.words.length) {
