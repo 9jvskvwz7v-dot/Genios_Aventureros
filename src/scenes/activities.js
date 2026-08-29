@@ -14,7 +14,7 @@ export const activities = [
         title: 'Sopa del Bosque Encantado',
         type: 'wordsearch',
         cover: 'Sopa',
-        words: ['ARDILLA', 'BUHO', 'CONEJO', 'ERIZO', 'LINTERNA', 'FLORES']
+        words: ['ARDILLA', 'BUHO', 'CONEJO', 'ERIZO', 'LINTERNA', 'FLORES','LUCIERNAGA']
     },
     {
         id: 'completar1',
@@ -44,7 +44,9 @@ export const activities = [
         sentences: [
             ['LA', 'NAVE', 'VUELA', 'ALTO'],
             ['LA', 'LUNA', 'BRILLA', 'DE', 'NOCHE'],
-            ['ANA', 'JUEGA', 'EN', 'EL', 'BOSQUE']
+            ['ANA', 'JUEGA', 'EN', 'EL', 'BOSQUE'],
+            ['KIRO', 'ES', 'GENIAL'],
+            ['YO', 'SOY', 'UN','AVENTURERO']
         ]
     }
 ];
