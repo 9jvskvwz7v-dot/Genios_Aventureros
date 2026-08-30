@@ -15,17 +15,11 @@ const BUBBLE_CONFIG = {
     spawnIntervalMs: 900,
     correctBubbleChance: 0.42,
     bubbleRadiusRange: [34, 46],
-    // Cuánto más grande es el área "tocable" comparada con el círculo que se
-    // ve (1.4 = 40% extra de margen). Sube este número si sigue costando
-    // tocarlas; bájalo si sientes que se activan burbujas "por accidente".
     hitAreaPadding: 1.45,
-    minFallSpeedDuration: 3200, // ms, velocidad máxima (ronda avanzada)
-    baseFallDuration: 7000,     // ms, velocidad inicial
+    minFallSpeedDuration: 3200,
+    baseFallDuration: 7000,
     speedRampEveryRounds: 3,
-    speedRampAmount: 700,       // ms que se restan a la duración cada ramp
-    // Paleta de colores para variar las burbujas (coherente con el resto del juego)
-    // Ya no se usa mientras haya imágenes propias por letra (ver spawnBubble).
-    // Sirve de respaldo si algún día vuelves a las burbujas dibujadas por código.
+    speedRampAmount: 700,
     bubbleColors: [0x1AA7C2, 0xFFD166, 0x06D6A0, 0x7C6BFF, 0xEF476F],
 };
 
@@ -50,6 +44,7 @@ export class BurbujasLetras extends Phaser.Scene {
         this.load.image('fondo_B', 'assets/fondo_B.png');
         this.load.image('control', 'assets/control.png');
         this.load.image('puntos', 'assets/puntos.png')
+        this.load.image('vidas', 'assets/vidas.png')
         BUBBLE_CONFIG.letters.forEach(letter => {
             this.load.image('bubble_' + letter, `assets/${letter}.png`);
         });
@@ -62,6 +57,7 @@ export class BurbujasLetras extends Phaser.Scene {
         this.cameras.main.fadeIn(400, 0, 0, 0);
         this.add.image(640, 360, 'fondo_B').setScale(0.23);
         this.add.image(1100,20, 'puntos').setScale(0.4)
+        this.add.image(130,20, 'vidas').setScale(0.4)
 
         this.add.text(640, 45, (this.activity && this.activity.title) || 'Burbujas de Letras', {
             fontFamily: 'Arial',
@@ -69,6 +65,7 @@ export class BurbujasLetras extends Phaser.Scene {
             color: '#000000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
+        
 
         this.livesText = this.add.text(120, 90, '', {
             fontFamily: 'Arial',
@@ -282,10 +279,10 @@ export class BurbujasLetras extends Phaser.Scene {
         if (isCorrect) {
             this.score += 10;
             this.correctPopped++;
-            this.flashFeedback('¡Bien! 🎉', '#7CFC00');
+            this.flashFeedback('¡Bien!', '#7CFC00');
         } else {
             this.lives--;
-            this.flashFeedback('¡Esa no! 😅', '#EF476F');
+            this.flashFeedback('¡Esa no!', '#EF476F');
         }
         this.updateHUD();
 
