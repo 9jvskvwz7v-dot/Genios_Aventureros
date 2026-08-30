@@ -1,3 +1,4 @@
+
 import { activities } from './activities.js';
 
 export class RompecabezasFrases extends Phaser.Scene {
