@@ -15,7 +15,7 @@ export class Actividades extends Phaser.Scene {
         this.load.image('caperucita', 'assets/caperucita.png')
         this.load.image('abc', 'assets/abc.png')
         this.load.image('completa', 'assets/completa.png')
-        this.load.image('memoria', 'assets/memoria.png')
+        this.load.image('memoria', 'assets/Memoria.png')
     }
 
     create() {
