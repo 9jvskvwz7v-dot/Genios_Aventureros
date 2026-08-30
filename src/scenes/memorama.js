@@ -31,6 +31,8 @@ export class Memorama extends Phaser.Scene {
     preload() {
         this.load.image('background', 'assets/fondo1.png');
         this.load.image('control', 'assets/control.png');
+        this.load.image('intentos', 'assets/intentos.png')
+        this.load.image('puntos', 'assets/puntos.png')
         MEMORY_CONFIG.defaultCharacters.forEach(key => {
             this.load.image(key, `assets/${key}.png`);
         });
@@ -43,24 +45,27 @@ export class Memorama extends Phaser.Scene {
 
         this.cameras.main.fadeIn(400, 0, 0, 0);
         this.add.image(640, 360, 'background').setScale(0.16);
+        this.add.image(125, 35, 'intentos').setScale(0.3)
+        this.add.image(1150, 40, 'puntos').setScale(0.3)
 
         this.add.text(640, 45, (this.activity && this.activity.title) || 'Memorama de Cuentos', {
             fontFamily: 'Arial',
             fontSize: '38px',
-            color: '#ffffff',
+            color: '#000000',
             fontStyle: 'bold'
         }).setOrigin(0.5);
 
         this.attemptsText = this.add.text(120, 90, '', {
             fontFamily: 'Arial',
-            fontSize: '20px',
-            color: '#aaaaaa'
+            fontSize: '24px',
+            color: '#000000',
+            fontStyle: 'bold'
         }).setOrigin(0.5);
 
         this.scoreText = this.add.text(1160, 90, '', {
             fontFamily: 'Arial',
             fontSize: '24px',
-            color: '#ffdd55',
+            color: '#000000',
             fontStyle: 'bold'
         }).setOrigin(1, 0.5);
 
@@ -93,7 +98,7 @@ export class Memorama extends Phaser.Scene {
         const { cols, rows, cellWidth, cellHeight, gap } = MEMORY_CONFIG;
         const gridWidth = cols * cellWidth + (cols - 1) * gap;
         const startX = 640 - gridWidth / 2 + cellWidth / 2;
-        const startY = 200;
+        const startY = 225;
 
         deck.forEach((character, index) => {
             const col = index % cols;
@@ -240,8 +245,8 @@ export class Memorama extends Phaser.Scene {
     }
 
     updateHUD() {
-        this.attemptsText.setText(`Intentos: ${this.attempts}`);
-        this.scoreText.setText('⭐ ' + this.score);
+        this.attemptsText.setText(`${this.attempts}`);
+        this.scoreText.setText('' + this.score);
     }
 
     endGame() {
