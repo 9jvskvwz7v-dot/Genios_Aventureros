@@ -78,7 +78,7 @@ export class CompletaPalabra extends Phaser.Scene {
 
         this.currentWord = this.words[this.wordIndex];
         this.roundText.setText(`Palabra ${this.wordIndex + 1} / ${this.words.length}`);
-        this.scoreText.setText(`⭐ ${this.score}`);
+        this.scoreText.setText(`${this.score}`);
         this.feedbackText.setText('');
 
         this.blankIndices = this.pickBlankIndices(this.currentWord);
@@ -275,8 +275,8 @@ export class CompletaPalabra extends Phaser.Scene {
 
     completeRound() {
         this.score += 150;
-        this.scoreText.setText(`⭐ ${this.score}`);
-        this.feedbackText.setText('¡Muy bien! 🎉');
+        this.scoreText.setText(`${this.score}`);
+        this.feedbackText.setText('¡Muy bien!');
 
         this.time.delayedCall(1200, () => {
             this.wordIndex++;
