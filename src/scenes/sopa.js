@@ -40,7 +40,14 @@ export class SopaDeLetras extends Phaser.Scene {
 
     create() {
         this.activity = activities.find(a => a.id === this.activityId);
-        this.words = this.activity.words.map(w => w.toUpperCase());
+
+        // Toma 'wordsPerRound' palabras al azar del banco completo. Si la
+        // actividad no define 'wordsPerRound', usa todas (así cualquier
+        // otra sopa de letras que agregues sigue funcionando igual que antes
+        // aunque no le pongas ese campo).
+        const wordPool = this.activity.words.map(w => w.toUpperCase());
+        const roundSize = this.activity.wordsPerRound || wordPool.length;
+        this.words = Phaser.Utils.Array.Shuffle([...wordPool]).slice(0, roundSize);
 
         this.cameras.main.fadeIn(400, 0, 0, 0);
 
