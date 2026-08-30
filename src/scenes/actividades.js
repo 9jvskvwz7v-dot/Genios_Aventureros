@@ -12,6 +12,10 @@ export class Actividades extends Phaser.Scene {
         this.load.image('Sopa', 'assets/Sopa.png');
         this.load.image('Une', 'assets/une.png')
         this.load.image('Arma', 'assets/arma.png')
+        this.load.image('caperucita', 'assets/caperucita.png')
+        this.load.image('abc', 'assets/abc.png')
+        this.load.image('completa', 'assets/completa.png')
+        this.load.image('memoria', 'assets/memoria.png')
     }
 
     create() {
@@ -57,13 +61,6 @@ export class Actividades extends Phaser.Scene {
     createActivityCard(x, y, w, h, activity) {
         const container = this.add.container(x, y);
 
-        // Fondo de la tarjeta (siempre visible, aunque tenga imagen encima)
-        const panel = this.add.graphics();
-        panel.fillStyle(0x2b2b45, 0.9);
-        panel.lineStyle(3, 0xffffff, 0.35);
-        panel.fillRoundedRect(-w / 2, -h / 2, w, h, 20);
-        panel.strokeRoundedRect(-w / 2, -h / 2, w, h, 20);
-        container.add(panel);
 
         if (activity.cover) {
             // Imagen de portada: se escala PROPORCIONALMENTE para que quepa
@@ -107,6 +104,10 @@ export class Actividades extends Phaser.Scene {
                 this.scene.start('UnePalabraImagen', { activityId: activity.id });
             } else if (activity.type === 'sentencepuzzle') {
                 this.scene.start('RompecabezasFrases', { activityId: activity.id });
+            } else if (activity.type === 'letterbubbles') {
+                this.scene.start('BurbujasLetras', { activityId: activity.id });
+            } else if (activity.type === 'memory') {
+                this.scene.start('Memorama', { activityId: activity.id });
             }
         });
     }

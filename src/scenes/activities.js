@@ -1,13 +1,3 @@
-// Aquí van todas tus actividades. Cada una es un objeto con:
-// - id:     identificador único (sin espacios)
-// - title:  título que se muestra en la lista
-// - type:   tipo de actividad
-//           'wordsearch'     -> sopa de letras (usa 'words')
-//           'completeword'   -> completa la palabra con voz (usa 'words')
-//           'matchimage'     -> une palabra e imagen (usa 'pairs')
-//           'sentencepuzzle' -> rompecabezas de frases (usa 'sentences')
-// - cover:  (opcional) key de una imagen de portada precargada en Actividades.js
-
 export const activities = [
     {
         id: 'sopa2',
@@ -20,7 +10,7 @@ export const activities = [
         id: 'completar1',
         title: 'Completa la Palabra',
         type: 'completeword',
-        cover: null,
+        cover: 'completa',
         words: ['LUNA', 'NAVE', 'MAGIA', 'BOSQUE', 'COHETE', 'ESTRELLA']
     },
     {
@@ -48,5 +38,17 @@ export const activities = [
             ['KIRO', 'ES', 'GENIAL'],
             ['YO', 'SOY', 'UN','AVENTURERO']
         ]
+    },
+    {
+        id: 'burbujas1',
+        title: 'Burbujas de Letras',
+        type: 'letterbubbles',
+        cover: 'abc'
+    },
+    {
+        id: 'memorama1',
+        title: 'Memorama de Cuentos',
+        type: 'memory',
+        cover: 'memoria'
     }
 ];
