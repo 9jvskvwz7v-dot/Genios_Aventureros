@@ -7,6 +7,8 @@ import { SopaDeLetras } from './scenes/sopa.js';
 import { CompletaPalabra } from './scenes/completa.js';
 import { UnePalabraImagen } from './scenes/unePalabra.js';
 import { RompecabezasFrases } from './scenes/RompecabezasFrases.js';
+import { BurbujasLetras } from './scenes/burbujas.js';
+import { Memorama } from './scenes/memorama.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -27,6 +29,8 @@ const config = {
         CompletaPalabra,
         UnePalabraImagen,
         RompecabezasFrases,
+        BurbujasLetras,
+        Memorama,
     ],
     scale: {
         mode: Phaser.Scale.FIT,
