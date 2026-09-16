@@ -12,7 +12,7 @@ import { Memorama } from './scenes/memorama.js';
 
 const config = {
     type: Phaser.AUTO,
-    title: 'Genius',
+    title: 'Genios Aventureros',
     description: '',
     parent: 'game-container',
     width: 1280,
